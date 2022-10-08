@@ -23,14 +23,18 @@ data<- data%>%
 #look at variance in spore density among hives
 data%>%
   ggplot(aes(x= Hive, y= Spobee))+
-  geom_jitter(size=2, width=0.5)
+  geom_jitter(size=2, width=0.5) +
+  ggtitle("Variance vs Hive")
+
+
 
 #transform spore density to (try to) reduce variance
 
 #log10
 data%>%
   ggplot(aes(x= Hive, y= log10(Spobee+1)))+
-  geom_jitter(size=2, width=0.5)
+  geom_jitter(size=2, width=0.5) +
+  ggtitle("Log 10 + 1 transformed variance vs Hive")
 #pretty good
 
 #natural log
@@ -67,7 +71,10 @@ mod.1.res<- residuals(mod.1, type= "pearson")
 #add residuals to data
 mod.1.res.plot<- tibble(data$Hive,mod.1.res)
 #residuals vs. predictor plot of mod.1
-plot(data$Hive,mod.1.res)
+plot(data$Hive,mod.1.res, xlab = "", ylab ="")
+title(main="Residuals for Mod 1",
+     xlab="Hive",
+     ylab="Residuals")
 #residuals are not homogenous across hives
 
 #fit the "beyond optimal" model using lme4
@@ -94,12 +101,13 @@ anova(mod.3, mod.2, mod.1)
 #check the model
 mod.2.res<- residuals(mod.2, type="pearson")
 #mod.2 standardized residuals x fitted values
-plot(mod.2)
+plot(mod.2, xlab = "Fitted", ylab = "Residuals", main = "Residuals vs Fitted Values Mod 2")
+
 #this doesn't look great
 #mod.2 standardizes residuals x # of bees
-plot(data$BeesN, mod.2.res)
+plot(data$BeesN, mod.2.res, ylab= "Residuals", xlab = "Number of Bees in Hive", main = "Residuals vs Number of Bees for Mod 2")
 #mod.2 standardized residuals x infection
-plot(data$Infection, mod.2.res)
+plot(data$Infection, mod.2.res, ylab= "Residuals", xlab = "Infection", main = "Residuals vs Infection for Mod 2")
 
 #look at summary of mod.2 (full)
 summary(mod.2)
@@ -128,15 +136,15 @@ summary(mod.2.nobees.REML)
 mod.2.nobees.REML.res<- residuals(mod.2.nobees.REML, type="pearson")
 
 #histogram of residuals
-hist(mod.2.nobees.REML.res)
+hist(mod.2.nobees.REML.res, xlab = "Residual Values", main = "Histogram of residuals after removing # of bees from model")
 #normal-ish
 
 #residuals vs. fitted
-plot(mod.2.nobees.REML)
+plot(mod.2.nobees.REML, xlab= "Fitted", ylab = "Residuals", main = "Residuals vs Fitted Values REML model w/out # of bees")
 #still wider range of resid at lower fitted values than we'd like to see
 
 #residuals x predictors
-plot(data$Infection, mod.2.nobees.REML.res)
+plot(data$Infection, mod.2.nobees.REML.res,  ylab= "Residuals", xlab = "Infection", main = "Residuals vs Infection for Mod 2 without # of Bees")
 
 #calculate correlation between observations from the same hive
 data<- data%>%
