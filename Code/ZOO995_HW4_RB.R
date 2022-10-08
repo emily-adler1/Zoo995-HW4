@@ -3,12 +3,13 @@ library(tidyverse)
 library(nlme)
 library(lme4)
 library(lmerTest)
+library(here)
 
 ##set working directory
 setwd("/Users/rileybook/Documents/uw/academics/fall 2022/zoo 955/hw 4")
 
 ##read data
-data <- read.delim("bees.txt")
+data <- read.delim(here("data", ("bees.txt")))
 
 ##organize data
 data<- data%>%
